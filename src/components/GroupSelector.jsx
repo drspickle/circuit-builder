@@ -14,7 +14,7 @@ export default function GroupSelector({ selectedGroups, onGroupsChange, onGenera
   };
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <Box sx={{ height: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <AppBar
         position="static"
         elevation={0}
