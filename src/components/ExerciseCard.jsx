@@ -34,8 +34,8 @@ export default function ExerciseCard({ exercise, onReplace, onPickSpecific, onEd
           display: 'flex',
           alignItems: 'center',
           gap: 1.5,
-          py: 2,
-          '&:last-child': { pb: 2 },
+          py: 1.5,
+          '&:last-child': { pb: 1.5 },
         }}
       >
         <Box

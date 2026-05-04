@@ -75,11 +75,11 @@ export default function WorkoutView({ workout, selectedGroups, exercises, onBack
     : [];
 
   return (
-    <Box sx={{ minHeight: '100vh' }}>
+    <Box sx={{ height: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <AppBar
         position="static"
         elevation={0}
-        sx={{ backgroundColor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider' }}
+        sx={{ backgroundColor: 'background.paper', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}
       >
         <Toolbar>
           <IconButton edge="start" onClick={onBack} sx={{ mr: 1.5 }}>
@@ -102,28 +102,29 @@ export default function WorkoutView({ workout, selectedGroups, exercises, onBack
         </Toolbar>
       </AppBar>
 
-      <Container maxWidth="sm" sx={{ pt: 3, pb: 5 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2.5 }}>
-          {workout.length} exercises &nbsp;·&nbsp; ~{estMinutes} min &nbsp;·&nbsp; 3 × 12 each
-        </Typography>
+      <Box sx={{ flex: 1, overflowY: 'auto' }}>
+        <Container maxWidth="sm" sx={{ pt: 1.5, pb: 2 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1.5 }}>
+            {workout.length} exercises &nbsp;·&nbsp; ~{estMinutes} min &nbsp;·&nbsp; 3 × 12 each
+          </Typography>
 
-        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-          <SortableContext items={workout.map(e => e.id)} strategy={verticalListSortingStrategy}>
-            <Stack spacing={1.5}>
-              {workout.map((exercise, i) => (
-                <ExerciseCard
-                  key={exercise.id}
-                  exercise={exercise}
-                  onReplace={() => replace(i)}
-                  onPickSpecific={() => setPickerIndex(i)}
-                  onEdit={() => setEditIndex(i)}
-                />
-              ))}
-            </Stack>
-          </SortableContext>
-        </DndContext>
-
-      </Container>
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={workout.map(e => e.id)} strategy={verticalListSortingStrategy}>
+              <Stack spacing={1}>
+                {workout.map((exercise, i) => (
+                  <ExerciseCard
+                    key={exercise.id}
+                    exercise={exercise}
+                    onReplace={() => replace(i)}
+                    onPickSpecific={() => setPickerIndex(i)}
+                    onEdit={() => setEditIndex(i)}
+                  />
+                ))}
+              </Stack>
+            </SortableContext>
+          </DndContext>
+        </Container>
+      </Box>
 
       <ExerciseFormDialog
         open={editIndex !== null}
