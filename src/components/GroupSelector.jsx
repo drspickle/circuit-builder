@@ -21,7 +21,10 @@ export default function GroupSelector({ selectedGroups, onGroupsChange, onGenera
         sx={{ backgroundColor: 'transparent', borderBottom: '1px solid', borderColor: 'divider', flexShrink: 0 }}
       >
         <Toolbar>
-          <Box flex={1} />
+          <FitnessCenterIcon sx={{ fontSize: 24, color: 'primary.main', mr: 1 }} />
+          <Typography variant="h6" fontWeight={700} sx={{ flex: 1 }}>
+            Circuit Builder
+          </Typography>
           <Tooltip title="Manage exercises">
             <IconButton onClick={onViewExercises} sx={{ color: 'text.secondary' }}>
               <FormatListBulletedIcon />
@@ -37,20 +40,10 @@ export default function GroupSelector({ selectedGroups, onGroupsChange, onGenera
           flexDirection: 'column',
           alignItems: 'center',
           px: 3,
-          py: 2,
+          py: 1,
           minHeight: 0,
         }}
       >
-        {/* Header */}
-        <Box textAlign="center" mb={2} sx={{ flexShrink: 0 }}>
-          <FitnessCenterIcon sx={{ fontSize: 40, color: 'primary.main', mb: 0.5 }} />
-          <Typography variant="h5" fontWeight={700} gutterBottom>
-            Circuit Builder
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Tap a muscle group to include it in your circuit
-          </Typography>
-        </Box>
 
         {/* SVG figure */}
         <Box

@@ -37,7 +37,7 @@ function distributeCount(total, n) {
 }
 
 export function generateWorkout(selectedGroups, exercisePool) {
-  const total = selectedGroups.length === 1 ? 4 : 5;
+  const total = Math.max(6, selectedGroups.length);
   const distribution = distributeCount(total, selectedGroups.length);
 
   const buckets = selectedGroups
