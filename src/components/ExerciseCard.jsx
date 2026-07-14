@@ -54,7 +54,7 @@ export default function ExerciseCard({ exercise, onReplace, onPickSpecific, onEd
         </Box>
 
         <Box flex={1} minWidth={0}>
-          <Typography variant="h6" fontWeight={600} lineHeight={1.2} noWrap>
+          <Typography variant="subtitle1" fontWeight={600} lineHeight={1.3}>
             {exercise.name}
           </Typography>
           <Chip
