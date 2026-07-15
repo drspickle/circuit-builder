@@ -1,9 +1,9 @@
 export const SCHEMA_VERSION = 2;
 
 export const GROUPS = {
-  upper:     { label: 'Upper Body', subtitle: 'Push · Pull',    color: '#42A5F5' },
-  lower:     { label: 'Lower Body', subtitle: 'Squat · Hinge',  color: '#EF5350' },
-  full:      { label: 'Full Body',  subtitle: 'Compound moves', color: '#FFA726' },
+  upper:     { label: 'Upper Body', subtitle: 'Push · Pull',    color: '#FF9800' },
+  lower:     { label: 'Lower Body', subtitle: 'Squat · Hinge',  color: '#AB47BC' },
+  full:      { label: 'Full Body',  subtitle: '2 upper · 2 lower · 1 stability', color: '#42A5F5' },
   stability: { label: 'Stability',  subtitle: 'Core · Carries', color: '#66BB6A' },
 };
 

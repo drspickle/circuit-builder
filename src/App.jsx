@@ -42,7 +42,7 @@ function saveExercises(exercises) {
 
 export default function App() {
   const [exercises, setExercises] = useState(loadExercises);
-  const [selectedGroups, setSelectedGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState(null);
   const [workout, setWorkout] = useState(null);
   const [view, setView] = useState('home'); // 'home' | 'workout' | 'exercises'
   const [fieldLogUser, setFieldLogUser] = useState(null);
@@ -62,13 +62,14 @@ export default function App() {
     saveExercises(next);
   };
 
-  const handleGenerate = () => {
-    setWorkout(generateWorkout(selectedGroups, exercises));
+  const handleGenerate = (group) => {
+    setSelectedGroup(group);
+    setWorkout(generateWorkout(group, exercises));
     setView('workout');
   };
 
   const handleRegenerate = () => {
-    setWorkout(generateWorkout(selectedGroups, exercises));
+    setWorkout(generateWorkout(selectedGroup, exercises));
   };
 
   return (
@@ -86,7 +87,7 @@ export default function App() {
       {view === 'workout' && (
         <WorkoutView
           workout={workout}
-          selectedGroups={selectedGroups}
+          selectedGroup={selectedGroup}
           exercises={exercises}
           fieldLogUser={fieldLogUser}
           onBack={() => setView('home')}
@@ -97,8 +98,6 @@ export default function App() {
       )}
       {view === 'home' && (
         <GroupSelector
-          selectedGroups={selectedGroups}
-          onGroupsChange={setSelectedGroups}
           onGenerate={handleGenerate}
           onViewExercises={() => setView('exercises')}
         />

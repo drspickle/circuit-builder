@@ -24,37 +24,19 @@ function weightedSample(pool, count) {
   return result;
 }
 
-function distributeCount(total, n) {
-  const base = Math.floor(total / n);
-  const remainder = total % n;
-  const dist = Array(n).fill(base);
-  for (let i = 0; i < remainder; i++) dist[i]++;
-  for (let i = dist.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [dist[i], dist[j]] = [dist[j], dist[i]];
+export function generateWorkout(group, exercisePool) {
+  const pool = (g) => exercisePool.filter(e => e.group === g);
+
+  if (group === 'full') {
+    const upper = weightedSample(pool('upper'), 2);
+    const lower = weightedSample(pool('lower'), 2);
+    const stability = weightedSample(pool('stability'), 1);
+    // Interleave: U L U L S
+    return [upper[0], lower[0], upper[1], lower[1], stability[0]].filter(Boolean);
   }
-  return dist;
-}
 
-export function generateWorkout(selectedGroups, exercisePool) {
-  const total = Math.max(6, selectedGroups.length);
-  const distribution = distributeCount(total, selectedGroups.length);
-
-  const buckets = selectedGroups
-    .map((group, i) => {
-      const pool = exercisePool.filter(e => e.group === group);
-      return weightedSample(pool, distribution[i]);
-    })
-    .sort((a, b) => b.length - a.length);
-
-  const result = [];
-  const maxLen = Math.max(...buckets.map(b => b.length));
-  for (let i = 0; i < maxLen; i++) {
-    for (const bucket of buckets) {
-      if (i < bucket.length) result.push(bucket[i]);
-    }
-  }
-  return result;
+  const counts = { upper: 4, lower: 4, stability: 6 };
+  return weightedSample(pool(group), counts[group] ?? 6);
 }
 
 export function replaceExercise(exercise, currentWorkout, exercisePool) {

@@ -28,7 +28,7 @@ function localDateStr(d = new Date()) {
 }
 
 export default function WorkoutView({
-  workout, selectedGroups, exercises, fieldLogUser,
+  workout, selectedGroup, exercises, fieldLogUser,
   onBack, onRegenerate, onUpdateWorkout, onEditExercise,
 }) {
   const [pickerIndex, setPickerIndex] = useState(null);
@@ -97,7 +97,7 @@ export default function WorkoutView({
       setAuthOpen(true);
       return;
     }
-    setLogFocus(deriveFocus(selectedGroups));
+    setLogFocus(deriveFocus(selectedGroup));
     setLogDuration('');
     setLogResult(null);
     setLogOpen(true);
@@ -117,7 +117,7 @@ export default function WorkoutView({
     setAuthEmail('');
     setAuthPassword('');
     setTimeout(() => {
-      setLogFocus(deriveFocus(selectedGroups));
+      setLogFocus(deriveFocus(selectedGroup));
       setLogDuration('');
       setLogResult(null);
       setLogOpen(true);
@@ -141,7 +141,7 @@ export default function WorkoutView({
     setLogSaving(false);
   };
 
-  const groupLabels = selectedGroups.map(g => GROUPS[g].label).join(' · ');
+  const groupLabels = GROUPS[selectedGroup]?.label ?? '';
   const estMinutes = Math.round(workout.length * 6 / 5) * 5;
 
   const pickerGroup = pickerIndex !== null ? workout[pickerIndex].group : null;
