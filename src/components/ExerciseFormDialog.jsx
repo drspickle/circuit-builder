@@ -64,7 +64,7 @@ export default function ExerciseFormDialog({ open, exercise, onSave, onClose }) 
                 setForm(f => ({
                   ...f,
                   group: g,
-                  type: g === 'core' ? 'n/a' : (f.type === 'n/a' ? 'compound' : f.type),
+                  type: f.type === 'n/a' ? 'compound' : f.type,
                 }));
               }}
             >
@@ -79,7 +79,7 @@ export default function ExerciseFormDialog({ open, exercise, onSave, onClose }) 
             )}
           </FormControl>
 
-          {form.group !== 'core' && (
+          {form.type !== 'n/a' && (
             <Stack spacing={1}>
               <Typography variant="caption" color="text.secondary">Type</Typography>
               <ToggleButtonGroup

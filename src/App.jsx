@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from './theme';
 import GroupSelector from './components/GroupSelector';
 import WorkoutView from './components/WorkoutView';
 import ExerciseListPage from './components/ExerciseListPage';
-import { DEFAULT_EXERCISES } from './data/exercises';
+import { DEFAULT_EXERCISES, SCHEMA_VERSION } from './data/exercises';
 import { generateWorkout } from './utils/workout';
+import { supabase } from './utils/fieldlog';
 
-function migrate(ex) {
-  // Migrate old weight:1|2|3 format to type + favorite
+const STORAGE_KEY = 'circuit-builder-exercises';
+const VERSION_KEY = 'circuit-builder-schema-version';
+
+function migrateExercise(ex) {
+  // v1→v2: weight:1|2|3 → type + favorite
   if ('weight' in ex && !('type' in ex)) {
     return { ...ex, type: ex.weight >= 2 ? 'compound' : 'isolation', favorite: ex.weight >= 3, weight: undefined };
   }
@@ -17,15 +21,23 @@ function migrate(ex) {
 
 function loadExercises() {
   try {
-    const saved = localStorage.getItem('circuit-builder-exercises');
-    return saved ? JSON.parse(saved).map(migrate) : DEFAULT_EXERCISES;
+    const storedVersion = parseInt(localStorage.getItem(VERSION_KEY) || '1', 10);
+    if (storedVersion < SCHEMA_VERSION) {
+      // Groups changed entirely — reset to defaults and bump version
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(VERSION_KEY, String(SCHEMA_VERSION));
+      return DEFAULT_EXERCISES;
+    }
+    const saved = localStorage.getItem(STORAGE_KEY);
+    return saved ? JSON.parse(saved).map(migrateExercise) : DEFAULT_EXERCISES;
   } catch {
     return DEFAULT_EXERCISES;
   }
 }
 
 function saveExercises(exercises) {
-  localStorage.setItem('circuit-builder-exercises', JSON.stringify(exercises));
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(exercises));
+  localStorage.setItem(VERSION_KEY, String(SCHEMA_VERSION));
 }
 
 export default function App() {
@@ -33,6 +45,17 @@ export default function App() {
   const [selectedGroups, setSelectedGroups] = useState([]);
   const [workout, setWorkout] = useState(null);
   const [view, setView] = useState('home'); // 'home' | 'workout' | 'exercises'
+  const [fieldLogUser, setFieldLogUser] = useState(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setFieldLogUser(data?.session?.user ?? null);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setFieldLogUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const updateExercises = (next) => {
     setExercises(next);
@@ -65,6 +88,7 @@ export default function App() {
           workout={workout}
           selectedGroups={selectedGroups}
           exercises={exercises}
+          fieldLogUser={fieldLogUser}
           onBack={() => setView('home')}
           onRegenerate={handleRegenerate}
           onUpdateWorkout={setWorkout}

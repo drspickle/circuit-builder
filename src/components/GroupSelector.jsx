@@ -1,8 +1,7 @@
-import { Box, Typography, Button, AppBar, Toolbar, IconButton, Tooltip, Chip } from '@mui/material';
+import { Box, Typography, Button, AppBar, Toolbar, IconButton, Tooltip } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import { GROUPS } from '../data/exercises';
-import MuscleSvg from './MuscleSvg';
 
 export default function GroupSelector({ selectedGroups, onGroupsChange, onGenerate, onViewExercises }) {
   const toggle = (key) => {
@@ -22,9 +21,7 @@ export default function GroupSelector({ selectedGroups, onGroupsChange, onGenera
       >
         <Toolbar>
           <FitnessCenterIcon sx={{ fontSize: 24, color: 'primary.main', mr: 1 }} />
-          <Typography variant="h6" fontWeight={700} sx={{ flex: 1 }}>
-            Circuit Builder
-          </Typography>
+          <Typography variant="h6" fontWeight={700} sx={{ flex: 1 }}>Circuit Builder</Typography>
           <Tooltip title="Manage exercises">
             <IconButton onClick={onViewExercises} sx={{ color: 'text.secondary' }}>
               <FormatListBulletedIcon />
@@ -33,89 +30,69 @@ export default function GroupSelector({ selectedGroups, onGroupsChange, onGenera
         </Toolbar>
       </AppBar>
 
-      <Box
-        sx={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          px: 3,
-          py: 1,
-          minHeight: 0,
-        }}
-      >
+      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', px: 2, py: 2, gap: 1.5, minHeight: 0 }}>
+        <Typography variant="body2" color="text.secondary">
+          Select one or more training categories
+        </Typography>
 
-        {/* SVG figure */}
-        <Box
-          sx={{
-            flex: 1,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: 0,
-            width: '100%',
-          }}
-        >
-          <Box
-            sx={{
-              height: '100%',
-              maxHeight: '100%',
-              aspectRatio: '47.71 / 241.28',
-            }}
-          >
-            <MuscleSvg selectedGroups={selectedGroups} onToggle={toggle} />
-          </Box>
-        </Box>
-
-        {/* Selected group labels */}
-        <Box
-          sx={{
-            flexShrink: 0,
-            minHeight: 40,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            py: 1.5,
-          }}
-        >
-          {selectedGroups.length === 0 ? (
-            <Typography variant="body2" color="text.disabled">
-              No groups selected
-            </Typography>
-          ) : (
-            selectedGroups.map((key) => (
-              <Chip
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5, flex: 1, minHeight: 0 }}>
+          {Object.entries(GROUPS).map(([key, { label, subtitle, color }]) => {
+            const selected = selectedGroups.includes(key);
+            return (
+              <Box
                 key={key}
-                label={GROUPS[key].label}
                 onClick={() => toggle(key)}
-                size="small"
                 sx={{
-                  backgroundColor: GROUPS[key].color + '26',
-                  color: GROUPS[key].color,
-                  borderColor: GROUPS[key].color,
-                  border: '1px solid',
-                  fontWeight: 600,
-                  '&:hover': { backgroundColor: GROUPS[key].color + '40' },
+                  borderRadius: 3,
+                  border: '2px solid',
+                  borderColor: selected ? color : 'divider',
+                  backgroundColor: selected ? `${color}18` : 'background.paper',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  p: 2,
+                  transition: 'all 0.15s ease',
+                  userSelect: 'none',
+                  WebkitTapHighlightColor: 'transparent',
+                  '&:active': { opacity: 0.8 },
                 }}
-              />
-            ))
-          )}
+              >
+                <Box
+                  sx={{
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    backgroundColor: selected ? color : `${color}50`,
+                    mb: 'auto',
+                    transition: 'background-color 0.15s ease',
+                  }}
+                />
+                <Typography
+                  variant="subtitle1"
+                  fontWeight={700}
+                  lineHeight={1.2}
+                  sx={{ color: selected ? color : 'text.primary', mt: 2 }}
+                >
+                  {label}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ mt: 0.25 }}>
+                  {subtitle}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
 
-        {/* Generate button */}
-        <Box textAlign="center" sx={{ flexShrink: 0, pb: 2 }}>
-          <Button
-            variant="contained"
-            size="large"
-            disabled={selectedGroups.length === 0}
-            onClick={onGenerate}
-            sx={{ px: 7, py: 1.5, fontSize: '1rem' }}
-          >
-            Generate Workout
-          </Button>
-        </Box>
+        <Button
+          variant="contained"
+          size="large"
+          fullWidth
+          disabled={selectedGroups.length === 0}
+          onClick={onGenerate}
+          sx={{ py: 1.5, fontSize: '1rem', flexShrink: 0 }}
+        >
+          Generate Workout
+        </Button>
       </Box>
     </Box>
   );
