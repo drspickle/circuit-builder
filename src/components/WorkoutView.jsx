@@ -9,7 +9,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import CheckIcon from '@mui/icons-material/Check';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import BookmarkAddIcon from '@mui/icons-material/BookmarkAdd';
+import IosShareIcon from '@mui/icons-material/IosShare';
 import {
   DndContext, closestCenter, PointerSensor, KeyboardSensor, useSensor, useSensors,
 } from '@dnd-kit/core';
@@ -170,7 +170,7 @@ export default function WorkoutView({
           </Box>
           <Tooltip title={fieldLogUser ? 'Log to Field Log' : 'Connect to Field Log'}>
             <IconButton onClick={openLogDialog} sx={{ color: fieldLogUser ? 'primary.main' : 'text.secondary' }}>
-              <BookmarkAddIcon />
+              <IosShareIcon />
             </IconButton>
           </Tooltip>
           <IconButton onClick={handleCopy} sx={{ color: copied ? 'success.main' : 'text.secondary', transition: 'color 0.2s' }}>
