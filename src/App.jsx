@@ -62,14 +62,17 @@ export default function App() {
     saveExercises(next);
   };
 
-  const handleGenerate = (group) => {
+  const [addStability, setAddStability] = useState(false);
+
+  const handleGenerate = (group, withStability) => {
     setSelectedGroup(group);
-    setWorkout(generateWorkout(group, exercises));
+    setAddStability(withStability);
+    setWorkout(generateWorkout(group, exercises, withStability));
     setView('workout');
   };
 
   const handleRegenerate = () => {
-    setWorkout(generateWorkout(selectedGroup, exercises));
+    setWorkout(generateWorkout(selectedGroup, exercises, addStability));
   };
 
   return (

@@ -24,7 +24,7 @@ function weightedSample(pool, count) {
   return result;
 }
 
-export function generateWorkout(group, exercisePool) {
+export function generateWorkout(group, exercisePool, addStability = false) {
   const pool = (g) => exercisePool.filter(e => e.group === g);
 
   if (group === 'full') {
@@ -35,8 +35,15 @@ export function generateWorkout(group, exercisePool) {
     return [upper[0], lower[0], upper[1], lower[1], stability[0]].filter(Boolean);
   }
 
-  const counts = { upper: 4, lower: 4, stability: 6 };
-  return weightedSample(pool(group), counts[group] ?? 6);
+  if (group === 'stability') {
+    return weightedSample(pool('stability'), 6);
+  }
+
+  // upper or lower — optionally append stability exercises
+  const primary = weightedSample(pool(group), 4);
+  if (!addStability) return primary;
+  const stability = weightedSample(pool('stability'), 2);
+  return [...primary, ...stability];
 }
 
 export function replaceExercise(exercise, currentWorkout, exercisePool) {
