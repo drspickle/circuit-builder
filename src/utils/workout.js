@@ -30,9 +30,10 @@ export function generateWorkout(group, exercisePool, addStability = false) {
   if (group === 'full') {
     const upper = weightedSample(pool('upper'), 2);
     const lower = weightedSample(pool('lower'), 2);
-    const stability = weightedSample(pool('stability'), 1);
-    // Interleave: U L U L S
-    return [upper[0], lower[0], upper[1], lower[1], stability[0]].filter(Boolean);
+    const base = [upper[0], lower[0], upper[1], lower[1]].filter(Boolean);
+    if (!addStability) return base;
+    const stability = weightedSample(pool('stability'), 2);
+    return [...base, ...stability];
   }
 
   if (group === 'stability') {

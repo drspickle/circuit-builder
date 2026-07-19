@@ -3,7 +3,7 @@ export const SCHEMA_VERSION = 2;
 export const GROUPS = {
   upper:     { label: 'Upper Body', subtitle: 'Push · Pull',    color: '#FF9800' },
   lower:     { label: 'Lower Body', subtitle: 'Squat · Hinge',  color: '#AB47BC' },
-  full:      { label: 'Full Body',  subtitle: '2 upper · 2 lower · 1 stability', color: '#42A5F5' },
+  full:      { label: 'Full Body',  subtitle: '2 upper · 2 lower', color: '#42A5F5' },
   stability: { label: 'Stability',  subtitle: 'Core · Carries', color: '#66BB6A' },
 };
 

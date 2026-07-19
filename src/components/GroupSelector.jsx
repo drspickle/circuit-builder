@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import { GROUPS } from '../data/exercises';
 
-const PRIMARIES = ['upper', 'lower', 'full'];
+const PRIMARIES = ['upper', 'lower', 'full', 'stability'];
 
 export default function GroupSelector({ onGenerate, onViewExercises }) {
   const [primary, setPrimary] = useState(null);
@@ -17,11 +17,11 @@ export default function GroupSelector({ onGenerate, onViewExercises }) {
       setPrimary(null);
     } else {
       setPrimary(key);
-      if (key === 'full') setAddStability(false);
+      if (key === 'stability') setAddStability(false);
     }
   };
 
-  const stabilityAvailable = primary === 'upper' || primary === 'lower';
+  const stabilityAvailable = primary !== null && primary !== 'stability';
   const canGenerate = primary !== null;
 
   const { color: stColor, label: stLabel, subtitle: stSubtitle } = GROUPS.stability;
