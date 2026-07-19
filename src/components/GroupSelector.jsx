@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CheckIcon from '@mui/icons-material/Check';
 import { GROUPS } from '../data/exercises';
 
-const PRIMARIES = ['upper', 'lower', 'full', 'stability'];
+const PRIMARIES = ['upper', 'lower', 'full'];
 
 export default function GroupSelector({ onGenerate, onViewExercises }) {
   const [primary, setPrimary] = useState(null);
@@ -17,14 +17,26 @@ export default function GroupSelector({ onGenerate, onViewExercises }) {
       setPrimary(null);
     } else {
       setPrimary(key);
-      if (key === 'stability') setAddStability(false);
     }
   };
 
-  const stabilityAvailable = primary !== null && primary !== 'stability';
+  // When a non-stability primary is active, Stability card acts as an add-on toggle
+  const stabilityIsAddon = primary !== null && primary !== 'stability';
+  const stabilitySelected = primary === 'stability';
+  const stabilityActive = stabilitySelected || (stabilityIsAddon && addStability);
   const canGenerate = primary !== null;
 
   const { color: stColor, label: stLabel, subtitle: stSubtitle } = GROUPS.stability;
+
+  const handleStabilityClick = () => {
+    if (stabilityIsAddon) {
+      setAddStability(v => !v);
+    } else {
+      // Acts as primary toggle
+      setPrimary(stabilitySelected ? null : 'stability');
+      setAddStability(false);
+    }
+  };
 
   return (
     <Box sx={{ height: '100dvh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
@@ -49,7 +61,7 @@ export default function GroupSelector({ onGenerate, onViewExercises }) {
           What are you training today?
         </Typography>
 
-        {/* Primary group — mutually exclusive */}
+        {/* Upper / Lower / Full Body — mutually exclusive primaries */}
         {PRIMARIES.map((key) => {
           const { label, subtitle, color } = GROUPS[key];
           const selected = primary === key;
@@ -95,63 +107,76 @@ export default function GroupSelector({ onGenerate, onViewExercises }) {
           );
         })}
 
-        {/* Stability — optional add-on */}
+        {/* Stability — primary when alone, add-on toggle when another primary is active */}
         <Box
-          onClick={() => stabilityAvailable && setAddStability(v => !v)}
+          onClick={handleStabilityClick}
           sx={{
             borderRadius: 3,
             border: '2px solid',
-            borderColor: addStability ? stColor : stabilityAvailable ? `${stColor}60` : 'divider',
-            backgroundColor: addStability ? `${stColor}14` : 'background.paper',
-            cursor: stabilityAvailable ? 'pointer' : 'default',
+            borderColor: stabilityActive ? stColor : `${stColor}60`,
+            backgroundColor: stabilityActive ? `${stColor}14` : 'background.paper',
+            cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             px: 2.5,
             py: 2,
             gap: 2,
-            transition: 'all 0.12s ease',
-            opacity: stabilityAvailable ? 1 : 0.35,
+            transition: 'all 0.15s ease',
             userSelect: 'none',
             WebkitTapHighlightColor: 'transparent',
-            '&:active': stabilityAvailable ? { opacity: 0.75 } : {},
+            '&:active': { opacity: 0.75 },
           }}
         >
-          <Box
-            sx={{
-              width: 20,
-              height: 20,
-              borderRadius: '50%',
-              border: '2px solid',
-              borderColor: addStability ? stColor : `${stColor}60`,
-              backgroundColor: addStability ? stColor : 'transparent',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-              transition: 'all 0.12s ease',
-            }}
-          >
-            {addStability
-              ? <CheckIcon sx={{ fontSize: 12, color: '#000' }} />
-              : <AddIcon sx={{ fontSize: 12, color: `${stColor}90` }} />
-            }
-          </Box>
+          {stabilityIsAddon ? (
+            // Add-on mode: checkbox-style indicator
+            <Box
+              sx={{
+                width: 20,
+                height: 20,
+                borderRadius: '50%',
+                border: '2px solid',
+                borderColor: addStability ? stColor : `${stColor}60`,
+                backgroundColor: addStability ? stColor : 'transparent',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                transition: 'all 0.15s ease',
+              }}
+            >
+              {addStability
+                ? <CheckIcon sx={{ fontSize: 12, color: '#000' }} />
+                : <AddIcon sx={{ fontSize: 12, color: `${stColor}90` }} />
+              }
+            </Box>
+          ) : (
+            // Primary mode: dot indicator matching the other cards
+            <Box
+              sx={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                backgroundColor: stabilitySelected ? stColor : `${stColor}60`,
+                flexShrink: 0,
+                transition: 'background-color 0.15s ease',
+              }}
+            />
+          )}
           <Box flex={1}>
             <Typography variant="subtitle1" fontWeight={700} lineHeight={1.2}
-              sx={{ color: addStability ? stColor : stabilityAvailable ? 'text.primary' : 'text.disabled' }}>
-              + {stLabel}
+              sx={{ color: stabilityActive ? stColor : 'text.primary' }}>
+              {stabilityIsAddon ? `+ ${stLabel}` : stLabel}
             </Typography>
             <Typography variant="caption" color="text.secondary">{stSubtitle}</Typography>
           </Box>
         </Box>
 
-        {/* Generate button */}
         <Button
           variant="contained"
           size="large"
           fullWidth
           disabled={!canGenerate}
-          onClick={() => onGenerate(primary, addStability)}
+          onClick={() => onGenerate(primary, stabilityIsAddon ? addStability : false)}
           sx={{ py: 1.5, fontSize: '1rem', flexShrink: 0, mt: 0.5 }}
         >
           Generate Circuit
